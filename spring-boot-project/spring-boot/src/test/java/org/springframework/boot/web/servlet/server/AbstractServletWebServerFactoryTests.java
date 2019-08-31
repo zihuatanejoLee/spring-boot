@@ -824,22 +824,26 @@ public abstract class AbstractServletWebServerFactoryTests {
 
 	@Test
 	protected void portClashOfPrimaryConnectorResultsInPortInUseException() throws IOException {
-		doWithBlockedPort((port) -> assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
-			AbstractServletWebServerFactory factory = getFactory();
-			factory.setPort(port);
-			AbstractServletWebServerFactoryTests.this.webServer = factory.getWebServer();
-			AbstractServletWebServerFactoryTests.this.webServer.start();
-		}).satisfies((ex) -> handleExceptionCausedByBlockedPortOnPrimaryConnector(ex, port)));
+		doWithBlockedPort((port) -> {
+			assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
+				AbstractServletWebServerFactory factory = getFactory();
+				factory.setPort(port);
+				AbstractServletWebServerFactoryTests.this.webServer = factory.getWebServer();
+				AbstractServletWebServerFactoryTests.this.webServer.start();
+			}).satisfies((ex) -> handleExceptionCausedByBlockedPortOnPrimaryConnector(ex, port));
+		});
 	}
 
 	@Test
 	void portClashOfSecondaryConnectorResultsInPortInUseException() throws IOException {
-		doWithBlockedPort((port) -> assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
-			AbstractServletWebServerFactory factory = getFactory();
-			addConnector(port, factory);
-			AbstractServletWebServerFactoryTests.this.webServer = factory.getWebServer();
-			AbstractServletWebServerFactoryTests.this.webServer.start();
-		}).satisfies((ex) -> handleExceptionCausedByBlockedPortOnSecondaryConnector(ex, port)));
+		doWithBlockedPort((port) -> {
+			assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
+				AbstractServletWebServerFactory factory = getFactory();
+				addConnector(port, factory);
+				AbstractServletWebServerFactoryTests.this.webServer = factory.getWebServer();
+				AbstractServletWebServerFactoryTests.this.webServer.start();
+			}).satisfies((ex) -> handleExceptionCausedByBlockedPortOnSecondaryConnector(ex, port));
+		});
 	}
 
 	@Test

@@ -218,12 +218,14 @@ class TomcatReactiveWebServerFactoryTests extends AbstractReactiveWebServerFacto
 
 	@Test
 	void portClashOfPrimaryConnectorResultsInPortInUseException() throws IOException {
-		doWithBlockedPort((port) -> assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
-			AbstractReactiveWebServerFactory factory = getFactory();
-			factory.setPort(port);
-			this.webServer = factory.getWebServer(mock(HttpHandler.class));
-			this.webServer.start();
-		}).satisfies((ex) -> handleExceptionCausedByBlockedPortOnPrimaryConnector(ex, port)));
+		doWithBlockedPort((port) -> {
+			assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
+				AbstractReactiveWebServerFactory factory = getFactory();
+				factory.setPort(port);
+				this.webServer = factory.getWebServer(mock(HttpHandler.class));
+				this.webServer.start();
+			}).satisfies((ex) -> handleExceptionCausedByBlockedPortOnPrimaryConnector(ex, port));
+		});
 	}
 
 	private void doWithBlockedPort(BlockedPortAction action) throws IOException {
