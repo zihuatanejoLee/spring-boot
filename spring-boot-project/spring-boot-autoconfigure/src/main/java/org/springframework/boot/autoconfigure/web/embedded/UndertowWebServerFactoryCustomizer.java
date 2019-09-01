@@ -168,14 +168,12 @@ public class UndertowWebServerFactoryCustomizer
 
 		@SuppressWarnings("unchecked")
 		<T> Consumer<Map<String, String>> forEach(Function<Option<T>, Consumer<T>> function) {
-			return (map) -> {
-				map.forEach((key, value) -> {
-					Option<T> option = (Option<T>) NAME_LOOKUP.get(getCanonicalName(key));
-					Assert.state(option != null, "Unable to find '" + key + "' in UndertowOptions");
-					T parsed = option.parseValue(value, getClass().getClassLoader());
-					function.apply(option).accept(parsed);
-				});
-			};
+			return (map) -> map.forEach((key, value) -> {
+				Option<T> option = (Option<T>) NAME_LOOKUP.get(getCanonicalName(key));
+				Assert.state(option != null, "Unable to find '" + key + "' in UndertowOptions");
+				T parsed = option.parseValue(value, getClass().getClassLoader());
+				function.apply(option).accept(parsed);
+			});
 		}
 
 		private static String getCanonicalName(String name) {
